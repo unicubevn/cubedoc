@@ -1,0 +1,258 @@
+openapi: 3.0.1
+info:
+  version: v1.0.0
+  title: OpenAPI cho hệ thống Edu
+servers:
+  - url: https://edu.onelink.vn
+security:
+  - bearerAuth: [ ]
+paths:
+  /api/users/login:
+    post:
+      description: API để nhập hệ thống Edu
+      operationId: login
+      security: [ ]
+#      parameters:
+#        - name: domain
+#          in: header
+#          example: "tich.hop"
+#          required: true
+      requestBody:
+        description: login
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+        required: true
+      responses:
+        200:
+          description: Login thành công
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      userName:
+                        type: string
+                        example: "tichhop"
+                      accessTokenInfo:
+                        $ref: "#/components/schemas/AccessTokenInfo"
+                      info:
+                        $ref: "#/components/schemas/Info"
+        400:
+          description: Phát sinh lỗi
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/users/addnew:
+    post:
+      description: API tạo user mới
+      operationId: addnew
+      security:
+        - bearerAuth:
+            - write:User
+            - read:User
+      requestBody:
+        description: Tạo user mới
+        content:
+          application/json:
+            schema:
+              properties:
+                domainName:
+                  type: string
+                  example: "school.vietsens.vn"
+                userInfo:
+                  $ref: "#/components/schemas/UserInfo"
+
+      responses:
+        200:
+          description: Khởi tạo user thành công
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "success"
+                  data:
+                    $ref: "#/components/schemas/UserInfo"
+        400:
+          description: Khởi tạo user không thành công
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/school/updatePerson:
+    post:
+      description: API update trạng thái của user
+      operationId: Update
+      security:
+        - bearerAuth:
+            - write:User
+            - read:User
+      requestBody:
+        description: Cập nhật thông tin mới
+        content:
+          application/json:
+            schema:
+              properties:
+                domainName:
+                  type: string
+                  example: "school.vietsens.vn"
+      responses:
+        200:
+          description: Khởi tạo user thành công
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "success"
+                  data:
+                    $ref: "#/components/schemas/UserInfo"
+        400:
+          description: Khởi tạo user không thành công
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/school/users:
+    post:
+      description: API lấy danh sách người dùng trong trường
+components:
+  securitySchemes:
+    bearerAuth:
+      scheme: "bearer"
+      type: "http"
+  schemas:
+    Error:
+      required:
+        - error
+        - message
+      type: object
+      properties:
+        error:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    Login:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: "tichhop"
+        password:
+          type: string
+          example: password
+    AccessTokenInfo:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJiYW91YyIsInN1YiI6InRpY2hob3AiLCJpYXQiOjE2ODYwNzMyNzcsImV4cCI6MTY4ODcwMzA3N30.Basjr216TOWs0Dae_gb5Z_UMugcb1WbOjAOHCiqxlIlLZenU5tGSfmfHFhG5H6vCodIi2v9E0nEw90Kmncdtw"
+        idToken:
+          type: integer
+          example: null
+        tokenType:
+          type: string
+          example: "bearer"
+        expiresIn:
+          type: integer
+          example: 1688703077000
+        refreshToken:
+          type: string
+          example: null
+        scope:
+          type: string
+          example: null
+    Info:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: "tichhop"
+        fullName:
+          type: string
+          example: "Tài khoản tích hợp"
+        mobile:
+          type: string
+          example: null
+        cardNo:
+          type: string
+          example: null
+        email:
+          type: string
+          example: null
+        gender:
+          type: boolean
+          example: null
+        genderStr:
+          type: string
+          example: ""
+        birthday:
+          type: string
+          example: ""
+        address:
+          type: string
+          example: null
+        city:
+          type: string
+          example: null
+        avatarPath:
+          type: string
+          example: null
+        notiUnread:
+          type: string
+          example: null
+    UserInfo:
+      type: object
+      properties:
+        personCode:
+          type: string
+          example: "ph_test2"
+        cardNo:
+          type: string
+          example: "0000001614463128"
+        accBank:
+          type: string
+          example: ""
+        dob:
+          type: string
+          example: ""
+        email:
+          type: string
+          example: ""
+        fullname:
+          type: string
+          example: "TRẦN HUY CƯỜNG"
+        gender:
+          type: string
+          example: ""
+        mobile:
+          type: string
+          example: ""
+        studentChildCode:
+          type: string
+          example: "People-001"
+        type:
+          type: string
+          example: "4"
+
